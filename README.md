@@ -10,9 +10,9 @@ Then in `dPT_server` run: `php artisan serve`
 
 - drag&drop
 - insert PCs (HOSTS) -> config ip/netmask/gw
-- inserire hub -> repeat signal
-- inserire router -> configure at least two different interfaces
-- stabilire collegamenti tra dispositivi
+- insert HUBs -> repeat signal
+- insert ROUTERs -> configure at least two different interfaces
+- establish connections between devices
 - [...]
 
 ## Software architecture
@@ -20,8 +20,8 @@ Then in `dPT_server` run: `php artisan serve`
 - API Web server (dPT_server):
     * GET /projects/ -> returns projects list
     * GET /projects/:id -> returns project :id
-    * PUT /projects/:id -> edit il project :id
-    * POST /projects/:id -> save a new project called :id
+    * PUT /projects/:id -> edits project :id
+    * POST /projects/:id -> saves a new project called :id
 
 - Database: 4 tables:
     * users(Laravel-implemented)
