@@ -1,0 +1,7 @@
+CREATE TABLE interfaces (
+
+ipaddr INT UNSIGNED UNIQUE PRIMARY KEY,
+netmask INT UNSIGNED,
+device_id INT(20) UNSIGNED REFERENCES devices(id)
+
+);
