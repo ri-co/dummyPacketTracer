@@ -4,8 +4,7 @@ Just a tiny and simple web application that allows to create network topologies.
 Start of the project: 2017
 
 To run dev web server locally, just download or clone this repo and make sure you have PHP >= 5.6.4 installed on your machine.
-Then in `dPT_server` run:
-    php artisan serve
+Then in `dPT_server` run: `php artisan serve`
 
 ## Functions being implemented
 
