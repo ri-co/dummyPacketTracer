@@ -19,6 +19,7 @@ Route::get('/info', function () {
     return view('info');
 });
 
+
 #Get projects list
 Route::get('/projects', function ($n) {
 
@@ -34,10 +35,14 @@ Route::get('/projects/{name}', function ($n) {
 
 #Create a new project
 Route::post('/projects/{name}', function () {
-    
+
 });
 
 #Save changes on a project
 Route::put('/projects/{name}', function () {
-    
+
 });
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index');
