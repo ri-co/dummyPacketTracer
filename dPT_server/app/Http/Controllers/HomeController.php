@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Database\Query;
 
 class HomeController extends Controller
 {
@@ -23,6 +24,10 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $powner = \Auth::user()->id;
+
+        $table = \DB::table('projects')->where('powner', '=', $powner)->get();
+
+        return view('home', compact('table'));
     }
 }

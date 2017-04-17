@@ -9,6 +9,12 @@
 
                 <div class="panel-body">
                     You are logged in!
+
+                    @foreach ($table as $project)
+
+                    <li> <a href='/get/<?php echo $project->pname ?>'> <?php echo $project->pname ?> </a> </li>
+
+                    @endforeach
                 </div>
             </div>
         </div>
