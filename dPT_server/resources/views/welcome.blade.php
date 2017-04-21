@@ -87,7 +87,7 @@
             </div>
         </div>
 
-        <div name="info" class="flex-center position-ref full-height">
+        <div id="info" class="flex-center position-ref full-height">
             Il progetto nasce....
 
         </div>
