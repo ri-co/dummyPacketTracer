@@ -30,4 +30,10 @@ class HomeController extends Controller
 
         return view('home', compact('table'));
     }
+
+    public function project()
+    {
+        return view('project');
+
+    }
 }

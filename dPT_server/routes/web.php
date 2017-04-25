@@ -19,12 +19,8 @@ Route::get('/info', function () {
     return view('info');
 });
 
-
-#Get projects list
-Route::get('/projects', function ($n) {
-
-    return view('list');
-});
+#Open new project view
+Route::get('/projects/new', 'HomeController@project');
 
 #Load a project
 Route::get('/projects/{name}', function ($n) {
