@@ -20,14 +20,10 @@ Route::get('/info', function () {
 });
 
 #Open new project view
-Route::get('/projects/new', 'HomeController@project');
+Route::get('/projects/new', 'HomeController@newProject');
 
 #Load a project
-Route::get('/projects/{name}', function ($n) {
-
-    $project = DB::table('projects')->find($n);
-    return view('project', project);
-});
+Route::get('/projects/{name}', ['uses' => 'HomeController@loadProject']);
 
 #Create a new project
 Route::post('/projects/{name}', function () {

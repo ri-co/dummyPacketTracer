@@ -31,9 +31,28 @@ class HomeController extends Controller
         return view('home', compact('table'));
     }
 
-    public function project()
+    public function newProject()
     {
         return view('project');
+    }
+
+    public function loadProject($name)
+    {
+        $project = \DB::table('projects')->where('pname', '=', $name)->get();
+
+        $devices = \DB::table('devices')->where('project', '=', $name)->get();
+
+        $interfaces = array();
+        $connections = array();
+
+        #DA RIVEDERE
+        /*foreach ($devices as $device) {
+
+          $interfaces = array_push(\DB::table('interfaces')->where('device_id', '=', $device['id'])->get());
+          $connections = array_push(\DB::table('connections')->where('devicea', '=', $device['id'])->orWhere('deviceb', '=', $device['id'])->get());
+        }*/
+
+        return view('project', compact('project', 'devices', 'interfaces', 'connections'));
 
     }
 }

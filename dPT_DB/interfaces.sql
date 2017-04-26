@@ -2,6 +2,7 @@ CREATE TABLE interfaces (
 
 ipaddr INT UNSIGNED UNIQUE PRIMARY KEY,
 netmask INT UNSIGNED,
-device_id INT(20) UNSIGNED REFERENCES devices(id)
-
+device_id INT(20) UNSIGNED,
+FOREIGN KEY (device_id) REFERENCES devices(id)
+ON DELETE CASCADE ON UPDATE CASCADE
 );
