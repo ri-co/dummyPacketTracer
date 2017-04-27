@@ -21,6 +21,13 @@
             'csrfToken' => csrf_token(),
         ]) !!};
     </script>
+    <script src="https://use.fontawesome.com/3dc3149a83.js"></script>
+    <script
+        src="https://code.jquery.com/jquery-3.2.1.js"
+        integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+        crossorigin="anonymous"></script>
+
+
 </head>
 <body>
     <div id="app">
@@ -85,5 +92,7 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
+    @yield('scripts')
+
 </body>
 </html>

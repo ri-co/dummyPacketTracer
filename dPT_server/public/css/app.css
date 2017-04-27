@@ -13,3 +13,8 @@
 
   width: 1.5em;
 }
+
+.hidden-form {
+
+  display: none;
+}

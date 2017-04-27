@@ -15,9 +15,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/info', function () {
-    return view('info');
-});
+#Returns projects list
+Route::get('/api/projects', 'HomeController@getProjects');
+
+#Returns a project
+Route::get('/api/projects/{name}', ['uses' => 'HomeController@getProject']);
+
 
 #Open new project view
 Route::get('/projects/new', 'HomeController@newProject');

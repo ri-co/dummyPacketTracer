@@ -8,13 +8,13 @@
 
   #Check if in HTTP Request is specified a project to load
   elseif (isset($_GET['name'])) {
-
+    
   }
 
   #Create a new project
   else {
 
-    
+
 
   }
 
