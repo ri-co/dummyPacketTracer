@@ -65,8 +65,21 @@ class HomeController extends Controller
 
     public function newProject()
     {
-        $status = "okay, funzionaaaa";
-        return json_encode($array);
+        $powner = \Auth::user()->id;
+        $pname = $_POST['pname'];
+        $values = array("pname" => $pname, "powner" => $powner, "psnapshot" => "NULL");
+        $project = \DB::table('projects')->insert($values);
+        if($project)
+          $response = array ("meta" => array(
+                                              "code" => 201,
+                                              "success" => true
+                                            ),
+                            "data" => array(
+                                              "URL" => "/api/projects/".$pname
+
+                                            ));
+          http_response_code(201);
+          return response(json_encode($response),201);
     }
 
     public function loadProject($name)
