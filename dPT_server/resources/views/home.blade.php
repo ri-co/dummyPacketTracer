@@ -20,7 +20,7 @@
                 </form>
                 </div>
 
-                <div class="panel-body">
+                <div class="panel-body" id="main-content">
                     <!--@foreach ($table as $project)
 
                     <li> <a href='/projects/<?php #echo $project->pname ?>'> <?php #echo $project->pname ?> </a> </li>
@@ -45,5 +45,19 @@ if(pname != "") {
   else
   console.log("Valore Null");
 }
+
+// sarebbe meglio $(function() { ma meno comprensibile per te
+$(document).ready(function() {
+    $.get('/api/projects', function (data) {
+        let projects_list = '<ul>';
+        for (var i=0; i<data.length; i++) {
+            let project=data[i];
+            projects_list += '<li>'+project.name+'</li>';
+        };
+        projects_list += '</ul>';
+        //meglio mettere un id='main-content' oltre a class per identificarlo univocamente;
+        $('#main-content').html(projects_list);
+    });
+});
 </script>
 @endsection
