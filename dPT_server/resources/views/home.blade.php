@@ -48,6 +48,11 @@ if(pname != "") {
   console.log("Valore Null");
 }
 
+function csrfSafeMethod(method) {
+  // these HTTP methods do not require CSRF protection
+  return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
 // sarebbe meglio $(function() { ma meno comprensibile per te
 $(document).ready(function() {
     $.get('/api/projects', function (data) {
@@ -59,6 +64,14 @@ $(document).ready(function() {
         projects_list += '</ul>';
         //meglio mettere un id='main-content' oltre a class per identificarlo univocamente;
         $('#main-content').html(projects_list);
+    });
+
+    $.ajaxSetup({
+      beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+          xhr.setRequestHeader("X-CSRF-Token", window.Laravel.csrfToken);
+        }
+      }
     });
 });
 </script>
