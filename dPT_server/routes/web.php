@@ -22,16 +22,16 @@ Route::get('/api/projects', 'HomeController@getProjects');
 Route::get('/api/projects/{name}', ['uses' => 'HomeController@getProject']);
 
 
+#Saves a new project
+Route::post('/api/projects', ['uses' => 'HomeController@newProject']);
+
+
 #Open new project view
 Route::get('/projects/new', 'HomeController@newProject');
 
 #Load a project
 Route::get('/projects/{name}', ['uses' => 'HomeController@loadProject']);
 
-#Create a new project
-Route::post('/projects/{name}', function () {
-
-});
 
 #Save changes on a project
 Route::put('/projects/{name}', function () {

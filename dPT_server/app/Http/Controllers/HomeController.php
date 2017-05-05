@@ -65,7 +65,8 @@ class HomeController extends Controller
 
     public function newProject()
     {
-        return view('project');
+        $status = "okay, funzionaaaa";
+        return json_encode($array);
     }
 
     public function loadProject($name)

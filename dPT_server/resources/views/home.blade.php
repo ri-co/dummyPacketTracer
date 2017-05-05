@@ -12,6 +12,7 @@
 
                 <div class="panel-body hidden-form" id="new-project">
               <form name="new-project" >
+
                   <fieldset class="form-group">
                     <label for="new-project-name">Project name</label>
                     <input type="text" class="form-control" id="new-project-name" placeholder="e.g. School network" onkeydown="if (event.keyCode == 13) { formSubmit(); return false; }">
@@ -41,6 +42,7 @@ var pname = $('#new-project-name').val();
 if(pname != "") {
     console.log("Valore ok");
     $.post('/api/projects', { pname: pname }, );
+
 }
   else
   console.log("Valore Null");
@@ -52,7 +54,7 @@ $(document).ready(function() {
         let projects_list = '<ul>';
         for (var i=0; i<data.length; i++) {
             let project=data[i];
-            projects_list += '<li>'+project.name+'</li>';
+            projects_list += '<li> <a onclick="getProject()">'+project.pname+'</a> </li>';
         };
         projects_list += '</ul>';
         //meglio mettere un id='main-content' oltre a class per identificarlo univocamente;
