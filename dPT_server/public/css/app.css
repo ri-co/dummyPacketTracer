@@ -14,7 +14,13 @@
   width: 1.5em;
 }
 
-.hidden-form {
+.hidden-element {
 
   display: none;
+}
+
+.img-device-list {
+
+  width: 5em; 
+
 }

@@ -78,7 +78,7 @@ class HomeController extends Controller
                                               "URL" => "/api/projects/".$pname
 
                                             ));
-          http_response_code(201);
+          
           return response(json_encode($response),201);
     }
 
