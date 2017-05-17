@@ -78,8 +78,41 @@ class HomeController extends Controller
                                               "URL" => "/api/projects/".$pname
 
                                             ));
-          
+
           return response(json_encode($response),201);
+    }
+
+    public function saveProject(Request $request, $name)
+    {
+        $powner = \Auth::user()->id;
+        $devices = $request->all() ;
+
+        foreach($devices["devices"] as $device) {
+          $attributes = array("id" => $device['id']);
+          $values = array("project" => $device['project'],"dtype" => $device['dtype']);
+          $result = \DB::table('devices')->updateOrInsert($attributes, $values);
+          foreach($device["interfaces"] as $interface) {
+            $attributes = array("ipaddr" => $interface['ipaddr']);
+            if(empty($interface["id"])) { $id = \DB::select('SELECT last_insert_id() AS id;'); $id = $id[0]->id;}
+            else $id = $interface["id"];
+            $values = array("ipaddr" => ip2long($interface['ipaddr']),"netmask" => ip2long($interface['netmask']), "device_id" => $id);
+
+            $result = \DB::table('interfaces')->updateOrInsert($attributes, $values);
+
+          }
+        }
+        if($result)
+          $response = array ("meta" => array(
+                                              "code" => 201,
+                                              "success" => true
+                                            ),
+                            "data" => array(
+                                              "URL" => "/api/projects/".$name
+
+                                            ));
+
+          return response(json_encode($response),201);
+          //return response(var_dump($id),201);
     }
 
     public function loadProject($name)

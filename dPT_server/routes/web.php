@@ -21,9 +21,12 @@ Route::get('/api/projects', 'HomeController@getProjects');
 #Returns a project
 Route::get('/api/projects/{name}', ['uses' => 'HomeController@getProject']);
 
-
 #Saves a new project
 Route::post('/api/projects', ['uses' => 'HomeController@newProject']);
+
+#Save changes on a project
+Route::put('/api/projects/{name}', ['uses' => 'HomeController@saveProject']);
+
 
 
 #Open new project view
@@ -33,10 +36,6 @@ Route::get('/projects/new', 'HomeController@newProject');
 Route::get('/projects/{name}', ['uses' => 'HomeController@loadProject']);
 
 
-#Save changes on a project
-Route::put('/projects/{name}', function () {
-
-});
 
 Auth::routes();
 

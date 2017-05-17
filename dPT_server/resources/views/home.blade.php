@@ -109,13 +109,15 @@ function insertRouter() {
 
     /*prende i dati della/delle interfacce di rete -
     da fare in loop (ciclo con contatore ripetuto n volte; n = numero interfacce) */
-    var pname = $('pname').val();
+    var pname = $('#pname').text();
     var ip_address = $('#interface1-ipaddr').val();
     var netmask = $('#interface1-netmask').val();
 
-    var req_data ='{"interfaces": [{"ipaddr" : ' + ip_address + ', "netmask" :' + netmask+'}]}';
-    req_data = JSON.parse(req_data);
-
+    var req_data ={"devices": [{ "id": "",
+                                  "project": pname,
+                                  "dtype": "ROUTER",
+                                  "interfaces": [{"id": "", "ipaddr" : ip_address , "netmask" : netmask}]
+                              }]};
     //richiesta PUT /api/projects/:id
 
     $.ajax({
