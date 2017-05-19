@@ -40,25 +40,24 @@ class HomeController extends Controller
     }
 
     public function getProject($name) {
-      $project = \DB::table('projects')->where('pname', '=', $name)->get();
-      $project = $project->toArray();
+      $rv = array();
+
+      $rv["project"] = (array) \DB::table('projects')->where('pname', '=', $name)->get()[0];
+      $rv["project"]["devices"] = [];
 
       $devices = \DB::table('devices')->where('project', '=', $name)->get();
-      $devices = $devices->toArray();
-
-      $interfaces = array();
-      $connections = array();
 
       #DA RIVEDERE
       foreach ($devices as $device) {
 
-        $interfaces = array_push(\DB::table('interfaces')->where('device_id', '=', $device->id)->get());
-        $connections = array_push(\DB::table('connections')->where('devicea', '=', $device->id)->orWhere('deviceb', '=', $device->)->get());
-        //return var_dump($device);
+        $device = (array) $device; //converte in array l'oggetto $device
+        $device["interfaces"] = \DB::table('interfaces')->where('device_id', '=', $device["id"])->get();
+        array_push($rv["project"]["devices"], $device);
       }
 
-      $obj_merged = array_merge($project, $devices);
-      return $obj_merged;
+      $rv["project"]["connections"] = \DB::table('connections')->get();
+
+      return $rv;
     }
 
 
