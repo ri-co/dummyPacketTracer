@@ -22,11 +22,7 @@
                 </div>
 
                 <div class="panel-body" id="projects-list">
-                    <!--@foreach ($table as $project)
 
-                    <li> <a href='/projects/<?php #echo $project->pname ?>'> <?php #echo $project->pname ?> </a> </li>
-
-                    @endforeach- -->
                 </div>
             </div>
         </div>
@@ -44,7 +40,7 @@
           <div class="panel panel-default">
             <div class="panel-heading">
               <button type="button" onclick="routerPanel()"><img src="https://openclipart.org/download/216575/network_router_generic.svg" class="img-circle img-device-list"></button>
-              <button type="button" onclick="hubPanel()"><img src="https://openclipart.org/download/171420/switch-hub.svg" class="img-circle img-device-list"></button>
+              <button type="button" onclick="hubPanel()"><img src="https://openclipart.org/download/171420/switch-hub.svg" class="img-device-list"></button>
               <button type="button" onclick="hostPanel()"><img src="https://openclipart.org/download/4714/BigRedSmile-A-new-Computer.svg" class="img-device-list"></button>
             </div>
             <div class="panel-body hidden-element" id="routerPanel">
@@ -131,7 +127,12 @@ function openPanel(pname) {
   $('#projects-home').hide();
   console.log(pname);
   $('#pname').html(pname);
-/* carica il progetto con un ajax request e lo mostra a video */
+  $.get('/api/projects/'+pname, function(data) {
+
+    /*mostra a video*/
+
+  });
+
   $('#project-panel').show();
 }
 
