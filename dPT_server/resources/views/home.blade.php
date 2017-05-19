@@ -42,6 +42,7 @@
               <button type="button" onclick="routerPanel()"><img src="https://openclipart.org/download/216575/network_router_generic.svg" class="img-circle img-device-list"></button>
               <button type="button" onclick="hubPanel()"><img src="https://openclipart.org/download/171420/switch-hub.svg" class="img-device-list"></button>
               <button type="button" onclick="hostPanel()"><img src="https://openclipart.org/download/4714/BigRedSmile-A-new-Computer.svg" class="img-device-list"></button>
+              <button type="button" onclick="connectionPanel()"><img src="https://openclipart.org/download/264111/connection-27185.svg" class="img-device-list"></button>
             </div>
             <div class="panel-body hidden-element" id="routerPanel">
               <form name="new-router-interface" id="interface1">
@@ -59,7 +60,7 @@
                 </form>
             </div>
             <div class="panel-body hidden-element" id="hubPanel">
-                <h2> Hub </h2>
+                <label class="label label-default"> New hub</label> <br>
                 <button type="button" class="btn btn-primary" onclick="insertHub()" > Create </button>
             </div>
             <div class="panel-body hidden-element" id="hostPanel">
@@ -78,6 +79,20 @@
                     <input type="text" class="form-control" id="host-dgateway" placeholder="e.g. 192.168.254.254" onkeydown="if (event.keyCode == 13) { insertRouter(); return false; }">
                   </fieldset>
                   <button type="button" class="btn btn-primary" onclick="insertHost()" > Create </button>
+                </form>
+            </div>
+            <div class="panel-body hidden-element" id="connectionPanel">
+              <form name="new-router-interface" id="connectionForm">
+                  <label class="label label-default"> Connection</label>
+                  <fieldset class="form-group">
+                    <label for="connection-devicea">Device A [id]</label>
+                    <input type="text" class="form-control" id="connection-devicea" placeholder="e.g. 5" onkeydown="if (event.keyCode == 13) { insertConnection(); return false; }">
+                  </fieldset>
+                  <fieldset class="form-group">
+                    <label for="connection-deviceb">Device B [id]</label>
+                    <input type="text" class="form-control" id="connection-deviceb" placeholder="e.g. 2" onkeydown="if (event.keyCode == 13) { insertConnection(); return false; }">
+                  </fieldset>
+                  <button type="button" class="btn btn-primary" onclick="insertConnection()" > Create </button>
                 </form>
             </div>
           </div>
@@ -163,6 +178,15 @@ function hostPanel() {
 
 }
 
+function connectionPanel() {
+
+  if($('#connectionPanel').css('display') == 'none')
+    $('#connectionPanel').show();
+  else
+    $('#connectionPanel').hide();
+
+}
+
 function insertHub() {
   var pname = $('#pname').text();
   var req_data ={"devices": [{ "id": "",
@@ -221,6 +245,26 @@ function insertRouter() {
       data: req_data
     });
 }
+
+
+function insertConnection() {
+
+    /*prende i dati della/delle interfacce di rete -
+    da fare in loop (ciclo con contatore ripetuto n volte; n = numero interfacce) */
+    var pname = $('#pname').text();
+    var req_data ={"connections": [{ "id": "",
+                                  "devicea": $('#connection-devicea').val(),
+                                  "deviceb": $('#connection-deviceb').val()
+                              }]};
+    //richiesta PUT /api/projects/:id
+
+    $.ajax({
+      url: '/api/projects/' + pname,
+      type: 'PUT',
+      data: req_data
+    });
+}
+
 
 function csrfSafeMethod(method) {
   // these HTTP methods do not require CSRF protection

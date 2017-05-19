@@ -50,9 +50,11 @@ class HomeController extends Controller
       #DA RIVEDERE
       foreach ($devices as $device) {
 
+
         $device = (array) $device; //converte in array l'oggetto $device
         $device["interfaces"] = \DB::table('interfaces')->where('device_id', '=', $device["id"])->get();
         array_push($rv["project"]["devices"], $device);
+
       }
 
       $rv["project"]["connections"] = \DB::table('connections')->get();
@@ -85,26 +87,36 @@ class HomeController extends Controller
     public function saveProject(Request $request, $name)
     {
         $powner = \Auth::user()->id;
-        $devices = $request->all() ;
+        $data = $request->all() ;
 
-        foreach($devices["devices"] as $device) {
-          $attributes = array("id" => $device['id']);
-          if($device['dtype'] == 'HOST')
-          $values = array("project" => $device['project'],"dtype" => $device['dtype'], "ipaddr" => ip2long($device['ipaddr']), "netmask" => ip2long($device["netmask"]), "dgateway" => ip2long($device["dgateway"]));
-          else $values = array("project" => $device['project'],"dtype" => $device['dtype']);
-          $result = \DB::table('devices')->updateOrInsert($attributes, $values);
-          if($device['dtype'] == 'ROUTER') {
-              foreach($device["interfaces"] as $interface) {
-                $attributes = array("ipaddr" => $interface['ipaddr']);
-                if(empty($interface["id"])) { $id = \DB::select('SELECT last_insert_id() AS id;'); $id = $id[0]->id;}
-                else $id = $interface["id"];
-                $values = array("ipaddr" => ip2long($interface['ipaddr']),"netmask" => ip2long($interface['netmask']), "device_id" => $id);
+        if(isset($data["devices"])) {
+            foreach($data["devices"] as $device) {
+              $attributes = array("id" => $device['id']);
+              if($device['dtype'] == 'HOST')
+              $values = array("project" => $device['project'],"dtype" => $device['dtype'], "ipaddr" => ip2long($device['ipaddr']), "netmask" => ip2long($device["netmask"]), "dgateway" => ip2long($device["dgateway"]));
+              else $values = array("project" => $device['project'],"dtype" => $device['dtype']);
+              $result = \DB::table('devices')->updateOrInsert($attributes, $values);
+              if($device['dtype'] == 'ROUTER') {
+                  foreach($device["interfaces"] as $interface) {
+                    $attributes = array("ipaddr" => $interface['ipaddr']);
+                    if(empty($interface["id"])) { $id = \DB::select('SELECT last_insert_id() AS id;'); $id = $id[0]->id;}
+                    else $id = $interface["id"];
+                    $values = array("ipaddr" => ip2long($interface['ipaddr']),"netmask" => ip2long($interface['netmask']), "device_id" => $id);
 
-                $result = \DB::table('interfaces')->updateOrInsert($attributes, $values);
+                    $result = \DB::table('interfaces')->updateOrInsert($attributes, $values);
+
+                  }
 
               }
+        }
+      }
+        if(isset($data["connections"])) {
+          foreach($data["connections"] as $connection) {
+            $attributes = array("id" => $connection['id']);
+            $values = array("devicea" => $connection['devicea'],"deviceb" => $connection['deviceb']);
+            $result = \DB::table('connections')->updateOrInsert($attributes, $values);
 
-          }
+            }
         }
         if($result)
           $response = array ("meta" => array(
