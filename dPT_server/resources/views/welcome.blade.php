@@ -81,15 +81,9 @@
                 </div>
 
                 <div class="links">
-                    <a href="#info">Info</a>
                     <a href="https://github.com/ri-co/dummyPacketTracer">GitHub</a>
                 </div>
             </div>
-        </div>
-
-        <div id="info" class="flex-center position-ref full-height">
-            Il progetto nasce....
-
         </div>
     </body>
 </html>
