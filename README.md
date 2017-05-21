@@ -8,7 +8,6 @@ Then in `dPT_server` run: `php artisan serve`
 
 ## Functions being implemented
 
-- drag&drop
 - insert PCs (HOSTS) -> config ip/netmask/gw
 - insert HUBs -> repeat signal
 - insert ROUTERs -> configure at least two different interfaces
@@ -23,11 +22,12 @@ Then in `dPT_server` run: `php artisan serve`
     * PUT /projects/:id -> edits project :id
     * POST /projects/:id -> saves a new project called :id
 
-- Database: 4 tables:
+- Database made of 5 tables 
     * users(Laravel-implemented)
     * devices 
     * projects
     * interfaces 
+    * connections
 
 ## Issues
 
