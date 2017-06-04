@@ -47,12 +47,19 @@ class HomeController extends Controller
 
       $devices = \DB::table('devices')->where('project', '=', $name)->get();
 
-      #DA RIVEDERE
       foreach ($devices as $device) {
 
 
         $device = (array) $device; //converte in array l'oggetto $device
+        $device["ipaddr"] = long2ip($device["ipaddr"]);
+        $device["netmask"] = long2ip($device["netmask"]);
+        $device["dgateway"] = long2ip($device["dgateway"]);
         $device["interfaces"] = \DB::table('interfaces')->where('device_id', '=', $device["id"])->get();
+        foreach ($device["interfaces"] as $interface) {
+          $interface = (array) $interface;
+          $interface["ipaddr"] = long2ip($interface["ipaddr"]);
+          $interface["netmask"] = long2ip($interface["netmask"]);
+        }
         array_push($rv["project"]["devices"], $device);
 
       }
@@ -88,6 +95,15 @@ class HomeController extends Controller
     {
         $powner = \Auth::user()->id;
         $data = $request->all() ;
+        $response = array ("meta" => array(
+                                            "code" => 201,
+                                            "success" => true
+                                          ),
+                          "data" => array(
+                                            "URL" => "/api/projects/".$name,
+                                            "devices" => array(),
+                                            "connections" => array(),
+                                          ));
 
         if(isset($data["devices"])) {
             foreach($data["devices"] as $device) {
@@ -96,15 +112,16 @@ class HomeController extends Controller
               $values = array("project" => $device['project'],"dtype" => $device['dtype'], "ipaddr" => ip2long($device['ipaddr']), "netmask" => ip2long($device["netmask"]), "dgateway" => ip2long($device["dgateway"]));
               else $values = array("project" => $device['project'],"dtype" => $device['dtype']);
               $result = \DB::table('devices')->updateOrInsert($attributes, $values);
+              $id = \DB::select('SELECT last_insert_id() AS id;');
+              $id = $id[0]->id;
+              $pos = array_push($response['data']['devices'], array('id' => $id, "project" => $device['project'],"dtype" => $device['dtype'], 'interfaces' => 0));
               if($device['dtype'] == 'ROUTER') {
                   foreach($device["interfaces"] as $interface) {
                     $attributes = array("ipaddr" => $interface['ipaddr']);
-                    if(empty($interface["id"])) { $id = \DB::select('SELECT last_insert_id() AS id;'); $id = $id[0]->id;}
-                    else $id = $interface["id"];
+                    if(!empty($interface["id"])) { $id = $interface["id"]; }
                     $values = array("ipaddr" => ip2long($interface['ipaddr']),"netmask" => ip2long($interface['netmask']), "device_id" => $id);
-
                     $result = \DB::table('interfaces')->updateOrInsert($attributes, $values);
-
+                    $response['data']['devices'][$pos-1]['interfaces']+=1;
                   }
 
               }
@@ -115,19 +132,12 @@ class HomeController extends Controller
             $attributes = array("id" => $connection['id']);
             $values = array("devicea" => $connection['devicea'],"deviceb" => $connection['deviceb']);
             $result = \DB::table('connections')->updateOrInsert($attributes, $values);
-
+            $id = \DB::select('SELECT last_insert_id() AS id;');
+            $id = $id[0]->id;
+            array_push($response['data']['connections'], array('id' => $id, 'devicea' => $connection['devicea'], 'deviceb' => $connection['deviceb']));
             }
         }
         if($result)
-          $response = array ("meta" => array(
-                                              "code" => 201,
-                                              "success" => true
-                                            ),
-                            "data" => array(
-                                              "URL" => "/api/projects/".$name
-
-                                            ));
-
           return response(json_encode($response),201);
           //return response(var_dump($id),201);
     }
