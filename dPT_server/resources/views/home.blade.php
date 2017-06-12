@@ -95,6 +95,7 @@
                   <button type="button" class="btn btn-primary" onclick="insertConnection()" > Create </button>
                 </form>
             </div>
+<div class="panel-body" id="topology"></div>
           </div>
         </div>
     </div>
@@ -145,11 +146,100 @@ function openPanel(pname) {
   $.get('/api/projects/'+pname, function(data) {
 
     /*mostra a video*/
+    var map_data = {
+      "status": 200,
+      "message": "success",
+      "content": {
+        "directed": false,
+        "links": [
+        ],
+        "multigraph": false,
+        "graph": [],
+        "nodes": [
+        ],
+        "last_seen": "1421832648.22"
+      },
+    };
+    //questo oggetto serve per mappare gli id dei devices
+    //con l'elemento nell'array per poi usare questa conversione
+    //e specificare source e target nei link. (d3js vuole la posizione nell'array)
+    var bind_id_to_array_index = {};
+    
+    for(var i=0; i<data.project.devices.length; i++) {
+      let dev = data.project.devices[i];
+      bind_id_to_array_index[dev.id] = i;
+      let all_ips = "N" + dev.id;
+      for (let j=0; j<dev.interfaces.length; j++) {
+        let intf = dev.interfaces[j];
+        all_ips += " IF" + j + ": " + intf.ipaddr + "/" + get_netmask_bits(intf.netmask);
+      }
+      let node = {
+        "type": dev.dtype,
+        "status": "online",
+        "id" : all_ips
+      };
 
+      //Add node in data structure suitable for topology drawing
+      /* examples:
+        { "status": "offline",
+          "_id": "54af98aea1234b06bbac8d5d",
+          "type": "host",
+          "id": "10.0.0.4"
+        },
+        { "status": "online",
+          "forwarding_policy": "0",
+          "type": "switch",
+          "id": "00:00:00:00:00:00:00:03",
+          "type_of_switch": "OF"
+        },
+        { "status": "online",
+          "forwarding_policy": "0",
+          "type": "switch",
+          "id": "00:00:00:00:00:00:00:02",
+          "type_of_switch": "OF"
+        },
+        { "status": "offline",
+          "_id": "54af98aea1234b06bbac8d5e",
+          "type": "host",
+          "id": "10.0.0.1"
+        }
+      */
+      map_data.content.nodes.push(node);
+    }
+
+    //crea le connessioni
+    /* examples:
+          {
+          "status": "online",
+          "source": 0,
+          "target": 1
+          },
+          {
+          "status": "online",
+          "source": 0,
+          "target": 2
+          }
+    */
+    for (var i=0; i<data.project.connections.length; i++) {
+      let conn = data.project.connections[i];
+      let link = {
+        "status": "online",
+        "source": bind_id_to_array_index[conn.devicea],
+        "target": bind_id_to_array_index[conn.deviceb]
+      }
+      map_data.content.links.push(link);
+    }
+    drawNetworkTopology(map_data);
+  
   });
 
   $('#project-panel').show();
 }
+
+function get_netmask_bits(netmask_int) {
+  let netmask_bin_str = (netmask_int >>> 0).toString(2);
+  return (netmask_bin_str.match(/1/g) || []).length;
+};
 
 function routerPanel() {
 
@@ -293,6 +383,8 @@ $(document).ready(function() {
         }
       }
     });
+
 });
 </script>
+
 @endsection
