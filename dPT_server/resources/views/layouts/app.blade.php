@@ -26,6 +26,16 @@
         src="https://code.jquery.com/jquery-3.2.1.js"
         integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
         crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
+    <script src="{{ asset('js/topology.js') }}"></script>
+    <style type="text/css">
+    .online-color {
+    stroke: #01ACC6;
+    stroke-width: 1px;
+    stroke-opacity: 1.0;
+    }
+    </style>
 </head>
 <body>
     <div id="app">
