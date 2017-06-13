@@ -16,6 +16,8 @@ imageByType = {
 "HUB_online" : "https://openclipart.org/download/171420/switch-hub.svg",
 "ROUTER_offline" : "https://openclipart.org/download/216575/network_router_generic.svg",
 "HUB_online" : "https://openclipart.org/download/171420/switch-hub.svg",
+"HOST_online" : "https://openclipart.org/download/4714/BigRedSmile-A-new-Computer.svg",
+"HOST_offline" : "https://openclipart.org/download/4714/BigRedSmile-A-new-Computer.svg"
 };
  
 function drawNetworkTopology(data) {
