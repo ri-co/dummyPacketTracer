@@ -391,12 +391,17 @@ function refresh_map(pname) {
     */
     for (var i=0; i<data.project.connections.length; i++) {
       let conn = data.project.connections[i];
-      let link = {
-        "status": "online",
-        "source": bind_id_to_array_index[conn.devicea],
-        "target": bind_id_to_array_index[conn.deviceb]
+      //WORKAROUND: inserisci i link solo se sia sorgente che
+      // destinazione esistono nella mappa. Lo sistemo al volo qui
+      // per non modificare la parte server
+      if ((conn.devicea in bind_id_to_array_index) && (conn.deviceb in bind_id_to_array_index)) {
+          let link = {
+            "status": "online",
+            "source": bind_id_to_array_index[conn.devicea],
+            "target": bind_id_to_array_index[conn.deviceb]
+          }
+          map_data.content.links.push(link);
       }
-      map_data.content.links.push(link);
     }
     drawNetworkTopology(map_data);
   
