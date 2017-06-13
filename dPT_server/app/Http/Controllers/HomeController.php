@@ -52,7 +52,8 @@ class HomeController extends Controller
 
         $device = (array) $device; //converte in array l'oggetto $device
         $device["ipaddr"] = long2ip($device["ipaddr"]);
-        $device["netmask"] = long2ip($device["netmask"]);
+        //meglio intero per il javascript che ho scritto ;)
+        //$device["netmask"] = long2ip($device["netmask"]);
         $device["dgateway"] = long2ip($device["dgateway"]);
         $device["interfaces"] = array();
         $interfaces = \DB::table('interfaces')->where('device_id', '=', $device["id"])->get();

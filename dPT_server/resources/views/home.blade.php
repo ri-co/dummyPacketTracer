@@ -333,9 +333,14 @@ function refresh_map(pname) {
       let dev = data.project.devices[i];
       bind_id_to_array_index[dev.id] = i;
       let all_ips = "N" + dev.id;
-      for (let j=0; j<dev.interfaces.length; j++) {
-        let intf = dev.interfaces[j];
-        all_ips += " IF" + j + ": " + intf.ipaddr + "/" + get_netmask_bits(intf.netmask);
+      if (dev.dtype == "ROUTER") {
+        for (let j=0; j<dev.interfaces.length; j++) {
+          let intf = dev.interfaces[j];
+          all_ips += " IF" + j + ": " + intf.ipaddr + "/" + get_netmask_bits(intf.netmask);
+        }
+      } else if (dev.dtype == "HOST") {
+          all_ips += ": " + dev.ipaddr + "/" + get_netmask_bits(dev.netmask) + "GW: " + dev.dgateway;
+
       }
       let node = {
         "type": dev.dtype,
