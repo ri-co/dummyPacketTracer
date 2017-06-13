@@ -52,13 +52,17 @@ class HomeController extends Controller
 
         $device = (array) $device; //converte in array l'oggetto $device
         $device["ipaddr"] = long2ip($device["ipaddr"]);
-        $device["netmask"] = long2ip($device["netmask"]);
+        //meglio intero per il javascript che ho scritto ;)
+        //$device["netmask"] = long2ip($device["netmask"]);
         $device["dgateway"] = long2ip($device["dgateway"]);
-        $device["interfaces"] = \DB::table('interfaces')->where('device_id', '=', $device["id"])->get();
-        foreach ($device["interfaces"] as $interface) {
+        $device["interfaces"] = array();
+        $interfaces = \DB::table('interfaces')->where('device_id', '=', $device["id"])->get();
+        foreach ($interfaces as $interface) {
           $interface = (array) $interface;
           $interface["ipaddr"] = long2ip($interface["ipaddr"]);
-          $interface["netmask"] = long2ip($interface["netmask"]);
+          //meglio intero per il javascript che ho scritto ;)
+          //$interface["netmask"] = long2ip($interface["netmask"]);
+          array_push($device["interfaces"], $interface);
         }
         array_push($rv["project"]["devices"], $device);
 
