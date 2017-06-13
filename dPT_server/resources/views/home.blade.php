@@ -143,6 +143,170 @@ function openPanel(pname) {
   $('#projects-home').hide();
   console.log(pname);
   $('#pname').html(pname);
+  refresh_map(pname);
+  $('#project-panel').show();
+}
+
+function get_netmask_bits(netmask_int) {
+  let netmask_bin_str = (netmask_int >>> 0).toString(2);
+  return (netmask_bin_str.match(/1/g) || []).length;
+};
+
+function routerPanel() {
+
+  if($('#routerPanel').css('display') == 'none')
+    $('#routerPanel').show();
+  else
+    $('#routerPanel').hide();
+
+}
+
+function hubPanel() {
+
+  if($('#hubPanel').css('display') == 'none')
+    $('#hubPanel').show();
+  else
+    $('#hubPanel').hide();
+
+}
+
+function hostPanel() {
+
+  if($('#hostPanel').css('display') == 'none')
+    $('#hostPanel').show();
+  else
+    $('#hostPanel').hide();
+
+}
+
+function connectionPanel() {
+
+  if($('#connectionPanel').css('display') == 'none')
+    $('#connectionPanel').show();
+  else
+    $('#connectionPanel').hide();
+
+}
+
+function insertHub() {
+  var pname = $('#pname').text();
+  var req_data ={"devices": [{ "id": "",
+                                "project": pname,
+                                "dtype": "HUB",
+                            }]};
+  $.ajax({
+    url: '/api/projects/' + pname,
+    type: 'PUT',
+    data: req_data
+  }).done(function(data) {
+      refresh_map(pname);
+  });
+}
+
+function insertHost() {
+
+    /*prende i dati della/delle interfacce di rete -
+    da fare in loop (ciclo con contatore ripetuto n volte; n = numero interfacce) */
+    var pname = $('#pname').text();
+    var req_data ={"devices": [{ "id": "",
+                                  "project": pname,
+                                  "dtype": "HOST",
+                                  "ipaddr": $('#host-ipaddr').val(),
+                                  "netmask": $('#host-netmask').val(),
+                                  "dgateway": $('#host-dgateway').val()
+                              }]};
+    //richiesta PUT /api/projects/:id
+
+    $.ajax({
+      url: '/api/projects/' + pname,
+      type: 'PUT',
+      data: req_data
+    }).done(function(data) {
+      refresh_map(pname);
+    });
+}
+
+function insertRouter() {
+
+    /*prende i dati della/delle interfacce di rete -
+    da fare in loop (ciclo con contatore ripetuto n volte; n = numero interfacce) */
+    var pname = $('#pname').text();
+    var req_data ={"devices": [{ "id": "",
+                                  "project": pname,
+                                  "dtype": "ROUTER",
+                                  "interfaces": []
+                              }]};
+    for(var id = 1; $("#interface"+ id).length != 0; id++) {
+      console.log("entro")
+        var ip_address = $('#interface'+id+'-ipaddr').val();
+        var netmask = $('#interface'+id+'-netmask').val();
+        req_data.devices[0].interfaces.push({"id": "", "ipaddr" : ip_address , "netmask" : netmask});
+    }
+    //richiesta PUT /api/projects/:id
+
+    $.ajax({
+      url: '/api/projects/' + pname,
+      type: 'PUT',
+      data: req_data
+    }).done(function(data) {
+      refresh_map(pname);
+    });
+}
+
+
+function insertConnection() {
+
+    /*prende i dati della/delle interfacce di rete -
+    da fare in loop (ciclo con contatore ripetuto n volte; n = numero interfacce) */
+    var pname = $('#pname').text();
+    var req_data ={"connections": [{ "id": "",
+                                  "devicea": $('#connection-devicea').val(),
+                                  "deviceb": $('#connection-deviceb').val()
+                              }]};
+    //richiesta PUT /api/projects/:id
+
+    $.ajax({
+      url: '/api/projects/' + pname,
+      type: 'PUT',
+      data: req_data
+    }).done(function(data) {
+      refresh_map(pname);
+    });
+}
+
+
+function csrfSafeMethod(method) {
+  // these HTTP methods do not require CSRF protection
+  return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
+// sarebbe meglio $(function() { ma meno comprensibile per te
+$(document).ready(function() {
+    $.get('/api/projects', function (data) {
+        let projects_list = '<ul>';
+        for (var i=0; i<data.length; i++) {
+            let project=data[i];
+            parameter = '`'+project.pname+'`';
+            function_call = '"openPanel(' + parameter + ')"';
+            projects_list += '<li> <a onclick='+function_call+'>'+project.pname+'</a> </li>';
+        };
+        projects_list += '</ul>';
+        //meglio mettere un id='projects-list' oltre a class per identificarlo univocamente;
+        $('#projects-list').html(projects_list);
+    });
+
+    $.ajaxSetup({
+      beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+          xhr.setRequestHeader("X-CSRF-Token", window.Laravel.csrfToken);
+        }
+      }
+    });
+
+});
+
+function refresh_map(pname) {
+  $('#topology').html('');
   $.get('/api/projects/'+pname, function(data) {
 
     /*mostra a video*/
@@ -232,159 +396,8 @@ function openPanel(pname) {
     drawNetworkTopology(map_data);
   
   });
-
-  $('#project-panel').show();
 }
 
-function get_netmask_bits(netmask_int) {
-  let netmask_bin_str = (netmask_int >>> 0).toString(2);
-  return (netmask_bin_str.match(/1/g) || []).length;
-};
-
-function routerPanel() {
-
-  if($('#routerPanel').css('display') == 'none')
-    $('#routerPanel').show();
-  else
-    $('#routerPanel').hide();
-
-}
-
-function hubPanel() {
-
-  if($('#hubPanel').css('display') == 'none')
-    $('#hubPanel').show();
-  else
-    $('#hubPanel').hide();
-
-}
-
-function hostPanel() {
-
-  if($('#hostPanel').css('display') == 'none')
-    $('#hostPanel').show();
-  else
-    $('#hostPanel').hide();
-
-}
-
-function connectionPanel() {
-
-  if($('#connectionPanel').css('display') == 'none')
-    $('#connectionPanel').show();
-  else
-    $('#connectionPanel').hide();
-
-}
-
-function insertHub() {
-  var pname = $('#pname').text();
-  var req_data ={"devices": [{ "id": "",
-                                "project": pname,
-                                "dtype": "HUB",
-                            }]};
-  $.ajax({
-    url: '/api/projects/' + pname,
-    type: 'PUT',
-    data: req_data
-  });
-}
-
-function insertHost() {
-
-    /*prende i dati della/delle interfacce di rete -
-    da fare in loop (ciclo con contatore ripetuto n volte; n = numero interfacce) */
-    var pname = $('#pname').text();
-    var req_data ={"devices": [{ "id": "",
-                                  "project": pname,
-                                  "dtype": "HOST",
-                                  "ipaddr": $('#host-ipaddr').val(),
-                                  "netmask": $('#host-netmask').val(),
-                                  "dgateway": $('#host-dgateway').val()
-                              }]};
-    //richiesta PUT /api/projects/:id
-
-    $.ajax({
-      url: '/api/projects/' + pname,
-      type: 'PUT',
-      data: req_data
-    });
-}
-
-function insertRouter() {
-
-    /*prende i dati della/delle interfacce di rete -
-    da fare in loop (ciclo con contatore ripetuto n volte; n = numero interfacce) */
-    var pname = $('#pname').text();
-    var req_data ={"devices": [{ "id": "",
-                                  "project": pname,
-                                  "dtype": "ROUTER",
-                                  "interfaces": []
-                              }]};
-    for(var id = 1; $("#interface"+ id).length != 0; id++) {
-      console.log("entro")
-        var ip_address = $('#interface'+id+'-ipaddr').val();
-        var netmask = $('#interface'+id+'-netmask').val();
-        req_data.devices[0].interfaces.push({"id": "", "ipaddr" : ip_address , "netmask" : netmask});
-    }
-    //richiesta PUT /api/projects/:id
-
-    $.ajax({
-      url: '/api/projects/' + pname,
-      type: 'PUT',
-      data: req_data
-    });
-}
-
-
-function insertConnection() {
-
-    /*prende i dati della/delle interfacce di rete -
-    da fare in loop (ciclo con contatore ripetuto n volte; n = numero interfacce) */
-    var pname = $('#pname').text();
-    var req_data ={"connections": [{ "id": "",
-                                  "devicea": $('#connection-devicea').val(),
-                                  "deviceb": $('#connection-deviceb').val()
-                              }]};
-    //richiesta PUT /api/projects/:id
-
-    $.ajax({
-      url: '/api/projects/' + pname,
-      type: 'PUT',
-      data: req_data
-    });
-}
-
-
-function csrfSafeMethod(method) {
-  // these HTTP methods do not require CSRF protection
-  return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-}
-
-// sarebbe meglio $(function() { ma meno comprensibile per te
-$(document).ready(function() {
-    $.get('/api/projects', function (data) {
-        let projects_list = '<ul>';
-        for (var i=0; i<data.length; i++) {
-            let project=data[i];
-            parameter = '`'+project.pname+'`';
-            function_call = '"openPanel(' + parameter + ')"';
-            projects_list += '<li> <a onclick='+function_call+'>'+project.pname+'</a> </li>';
-        };
-        projects_list += '</ul>';
-        //meglio mettere un id='projects-list' oltre a class per identificarlo univocamente;
-        $('#projects-list').html(projects_list);
-    });
-
-    $.ajaxSetup({
-      beforeSend: function(xhr, settings) {
-        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-          xhr.setRequestHeader("X-CSRF-Token", window.Laravel.csrfToken);
-        }
-      }
-    });
-
-});
 </script>
 
 @endsection
